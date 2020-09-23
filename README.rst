@@ -4,6 +4,7 @@ Usage
 -----
 
 ::
+
     $ zarrdump /path/to/dataset.zarr
     <xarray.Dataset>
     Dimensions:  (x: 3, y: 6)
