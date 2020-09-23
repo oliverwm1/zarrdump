@@ -3,7 +3,7 @@ Describe zarr stores from the command line.
 Usage
 -----
 
-.. code-block:: shell
+::
     $ zarrdump /path/to/dataset.zarr
     <xarray.Dataset>
     Dimensions:  (x: 3, y: 6)
