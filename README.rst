@@ -17,3 +17,11 @@ Limitations
 -----------
 
 Only works for zarr stores which represent xarray datasets.
+
+
+Installation
+------------
+
+::
+
+    $ pip install zarrdump
