@@ -7,7 +7,7 @@ import xarray as xr
 
 
 def test_version():
-    assert zarrdump.__version__ == '0.1.0'
+    assert zarrdump.__version__ == '0.1.1'
 
 
 @pytest.mark.parametrize("consolidated", [True, False])
