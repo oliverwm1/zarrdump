@@ -20,3 +20,4 @@ def _open_mapper(m: fsspec.FSMap) -> xr.Dataset:
         ds = xr.open_zarr(m, consolidated=True)
     except KeyError:
         ds = xr.open_zarr(m)
+    return ds

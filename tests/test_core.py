@@ -16,4 +16,4 @@ def test__open_mapper(tmpdir, consolidated):
     path = str(tmpdir.join("test.zarr"))
     ds.to_zarr(path, consolidated=consolidated)
     ds2 = _open_mapper(fsspec.get_mapper(path))
-    assert ds == ds2
+    xr.testing.assert_identical(ds, ds2)
