@@ -10,12 +10,19 @@ import xarray as xr
 def test_version():
     assert zarrdump.__version__ == '0.1.1'
 
+@pytest.fixture()
+def tmpzarr(tmpdir):
+    def to_zarr(consolidated=False):
+        ds = xr.Dataset({"var1": xr.DataArray(range(3))})
+        path = str(tmpdir.join("test.zarr"))
+        ds.to_zarr(path, consolidated=consolidated)
+        return ds, path
+    return to_zarr
+
 
 @pytest.mark.parametrize("consolidated", [True, False])
-def test__open_mapper(tmpdir, consolidated):
-    ds = xr.Dataset({"var1": xr.DataArray(range(3))})
-    path = str(tmpdir.join("test.zarr"))
-    ds.to_zarr(path, consolidated=consolidated)
+def test__open_mapper(tmpzarr, consolidated):
+    ds, path = tmpzarr(consolidated=consolidated)
     ds2 = _open_mapper(fsspec.get_mapper(path))
     xr.testing.assert_identical(ds, ds2)
 
