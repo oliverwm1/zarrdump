@@ -1,6 +1,7 @@
 import zarrdump
-from zarrdump.core import _open_mapper
+from zarrdump.core import _open_mapper, dump
 
+from click.testing import CliRunner
 import fsspec
 import pytest
 import xarray as xr
@@ -17,3 +18,10 @@ def test__open_mapper(tmpdir, consolidated):
     ds.to_zarr(path, consolidated=consolidated)
     ds2 = _open_mapper(fsspec.get_mapper(path))
     xr.testing.assert_identical(ds, ds2)
+
+
+def test_dump_non_existent_url():
+    runner = CliRunner()
+    result = runner.invoke(dump, ["non/existent/path"])
+    assert result.exit_code == 0
+    assert result.output == "zarrdump: No file or directory at non/existent/path\n"
