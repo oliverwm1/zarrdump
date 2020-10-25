@@ -35,6 +35,7 @@ setup(
         "Programming Language :: Python :: 3.7",
     ],
     description="Describe zarr stores from the command line.",
+    long_description="Describe zarr stores from the command line.",
     entry_points={
         "console_scripts": [
             "zarrdump=zarrdump.core:dump",
