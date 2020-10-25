@@ -9,12 +9,11 @@ import xarray as xr
 def dump(url: str, variable: str):
     fs, _, _ = fsspec.get_fs_token_paths(url)
     if not fs.exists(url):
-        printme = f"zarrdump: No file or directory at {url}"
-    else:
-        m = fs.get_mapper(url)
-        printme = _open_mapper(m)
-        if variable is not None:
-            printme = printme[variable]
+        raise click.ClickException(f"No file or directory at {url}")
+    m = fs.get_mapper(url)
+    printme = _open_mapper(m)
+    if variable is not None:
+        printme = printme[variable]
     print(printme)
 
 

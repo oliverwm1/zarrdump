@@ -23,5 +23,5 @@ def test__open_mapper(tmpdir, consolidated):
 def test_dump_non_existent_url():
     runner = CliRunner()
     result = runner.invoke(dump, ["non/existent/path"])
-    assert result.exit_code == 0
-    assert result.output == "zarrdump: No file or directory at non/existent/path\n"
+    assert result.exit_code == 1
+    assert result.output == "Error: No file or directory at non/existent/path\n"
