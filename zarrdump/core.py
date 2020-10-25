@@ -5,14 +5,16 @@ import xarray as xr
 
 @click.command()
 @click.argument("url")
-def dump(url: str):
+@click.option("-v", "--variable", type=str, help="Dump variable's info")
+def dump(url: str, variable: str):
     fs, _, _ = fsspec.get_fs_token_paths(url)
     if not fs.exists(url):
-        print(f"zarrdump: No file or directory at {url}")
-    else:
-        m = fs.get_mapper(url)
-        ds = _open_mapper(m)
-        print(ds)
+        raise click.ClickException(f"No file or directory at {url}")
+    m = fs.get_mapper(url)
+    printme = _open_mapper(m)
+    if variable is not None:
+        printme = printme[variable]
+    print(printme)
 
 
 def _open_mapper(m: fsspec.FSMap) -> xr.Dataset:
