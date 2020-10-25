@@ -32,3 +32,11 @@ def test_dump_non_existent_url():
     result = runner.invoke(dump, ["non/existent/path"])
     assert result.exit_code == 1
     assert result.output == "Error: No file or directory at non/existent/path\n"
+
+
+@pytest.mark.parametrize("options", [[], ["-v", "var1"]])
+def test_dump_executes(tmpzarr, options):
+    runner = CliRunner()
+    ds, path = tmpzarr()
+    result = runner.invoke(dump, [path] + options)
+    assert result.exit_code == 0
