@@ -10,7 +10,7 @@ import zarr
 
 
 def test_version():
-    assert zarrdump.__version__ == '0.1.1'
+    assert zarrdump.__version__ == '0.2.0'
 
 @pytest.fixture()
 def tmp_xarray_ds(tmpdir):

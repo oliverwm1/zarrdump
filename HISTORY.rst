@@ -1,3 +1,9 @@
+v0.2.0 (2020-11-18)
+-------------------
+
+- allowing dumping info for zarr arrays or zarr groups that don't represent xarray datasets
+- add -v option to print info for specific variable in dataset or group
+
 v0.1.1 (2020-10-04)
 -------------------
 
