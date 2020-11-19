@@ -13,12 +13,6 @@ Usage
         temperature        (x, y) float64 ...
 
 
-Limitations
------------
-
-Only works for zarr stores which represent xarray datasets.
-
-
 Installation
 ------------
 
