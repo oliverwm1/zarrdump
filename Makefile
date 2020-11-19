@@ -27,4 +27,4 @@ dist:
 	python setup.py sdist bdist_wheel
 
 release: dist
-	twine upload dist/*
+	python -m twine upload dist/*
