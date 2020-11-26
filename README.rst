@@ -1,9 +1,16 @@
 Describe zarr stores from the command line. A path to any "filesystem" backed by `fsspec <https://github.com/intake/filesystem_spec>`_ is valid.
 
+Installation
+------------
+
+::
+
+    $ pip install zarrdump
+
 Usage
 -----
 
-If zarr store can be opened by xarray, the xarray representation will be displayed:
+If zarr store can be opened by `xarray <https://github.com/pydata/xarray>`_, the xarray representation will be displayed:
 ::
 
     $ zarrdump gs://bucket/dataset.zarr
@@ -31,7 +38,7 @@ Can show information for a particular variable/array:
         longname:  surface temperature
         units:     K
 
-Diagnostic information will also be printed for zarr groups or arrays:
+Diagnostic information will also be printed for zarr arrays or zarr groups which do not represent xarray datasets:
 ::
     $ zarrdump group.zarr
     Name        : /
@@ -42,10 +49,3 @@ Diagnostic information will also be printed for zarr groups or arrays:
     No. arrays  : 2
     No. groups  : 0
     Arrays      : bar, foo
-
-Installation
-------------
-
-::
-
-    $ pip install zarrdump
