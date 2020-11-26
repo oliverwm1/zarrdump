@@ -1,3 +1,9 @@
+v0.2.1 (2020-11-26)
+-------------------
+
+- remove gcsfs from requirements
+- improve README and pypi page description
+
 v0.2.0 (2020-11-18)
 -------------------
 
