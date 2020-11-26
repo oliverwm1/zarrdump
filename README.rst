@@ -27,6 +27,7 @@ If zarr store can be opened by `xarray <https://github.com/pydata/xarray>`_, the
 
 Can show information for a particular variable/array:
 ::
+
     $ zarrdump -v ts gs://bucket/dataset.zarr
     <xarray.DataArray 'ts' (time: 32, lat: 73, lon: 144)>
     dask.array<zarr, shape=(32, 73, 144), dtype=float32, chunksize=(4, 73, 144), chunktype=numpy.ndarray>
@@ -40,6 +41,7 @@ Can show information for a particular variable/array:
 
 Diagnostic information will also be printed for zarr arrays or zarr groups which do not represent xarray datasets:
 ::
+
     $ zarrdump group.zarr
     Name        : /
     Type        : zarr.hierarchy.Group
