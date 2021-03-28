@@ -1,5 +1,5 @@
 import zarrdump
-from zarrdump.core import dump, _open_zarr 
+from zarrdump.core import dump, _open_with_xarray_or_zarr
 
 from click.testing import CliRunner
 import fsspec
@@ -10,7 +10,8 @@ import zarr
 
 
 def test_version():
-    assert zarrdump.__version__ == '0.2.1'
+    assert zarrdump.__version__ == "0.2.1"
+
 
 @pytest.fixture()
 def tmp_xarray_ds(tmpdir):
@@ -19,6 +20,7 @@ def tmp_xarray_ds(tmpdir):
         path = str(tmpdir.join("test.zarr"))
         ds.to_zarr(path, consolidated=consolidated)
         return ds, path
+
     return write_ds_to_zarr
 
 
@@ -32,15 +34,28 @@ def tmp_zarr_group(tmpdir):
         if consolidated:
             zarr.consolidate_metadata(path)
         return z, path
+
     return write_group_to_zarr
 
 
 @pytest.mark.parametrize("consolidated", [True, False])
-def test__open_zarr(tmp_zarr_group, consolidated):
+def test__open_with_xarray_or_zarr_on_zarr_group(tmp_zarr_group, consolidated):
     group, path = tmp_zarr_group(consolidated=consolidated)
-    opened_group, opened_group_is_consolidated = _open_zarr(fsspec.get_mapper(path))
+    opened_group, is_xarray_dataset = _open_with_xarray_or_zarr(
+        fsspec.get_mapper(path), consolidated
+    )
     np.testing.assert_allclose(group["var1"], opened_group["var1"])
-    assert consolidated == opened_group_is_consolidated
+    assert not (is_xarray_dataset)
+
+
+@pytest.mark.parametrize("consolidated", [True, False])
+def test__open_with_xarray_or_zarr_on_xarray_ds(tmp_xarray_ds, consolidated):
+    ds, path = tmp_xarray_ds(consolidated=consolidated)
+    opened_ds, is_xarray_dataset = _open_with_xarray_or_zarr(
+        fsspec.get_mapper(path), consolidated
+    )
+    np.testing.assert_allclose(ds["var1"], opened_ds["var1"])
+    assert is_xarray_dataset
 
 
 def test_dump_non_existent_url():
