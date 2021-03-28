@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Tuple, Union
 
 import click
 import fsspec
