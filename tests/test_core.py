@@ -41,19 +41,17 @@ def tmp_zarr_group(tmpdir):
 @pytest.mark.parametrize("consolidated", [True, False])
 def test__open_with_xarray_or_zarr_on_zarr_group(tmp_zarr_group, consolidated):
     group, path = tmp_zarr_group(consolidated=consolidated)
-    opened_group, is_xarray_dataset = _open_with_xarray_or_zarr(
-        fsspec.get_mapper(path), consolidated
-    )
+    m = fsspec.get_mapper(path)
+    opened_group, is_xarray_dataset = _open_with_xarray_or_zarr(m, consolidated)
     np.testing.assert_allclose(group["var1"], opened_group["var1"])
-    assert not (is_xarray_dataset)
+    assert not is_xarray_dataset
 
 
 @pytest.mark.parametrize("consolidated", [True, False])
 def test__open_with_xarray_or_zarr_on_xarray_ds(tmp_xarray_ds, consolidated):
     ds, path = tmp_xarray_ds(consolidated=consolidated)
-    opened_ds, is_xarray_dataset = _open_with_xarray_or_zarr(
-        fsspec.get_mapper(path), consolidated
-    )
+    m = fsspec.get_mapper(path)
+    opened_ds, is_xarray_dataset = _open_with_xarray_or_zarr(m, consolidated)
     np.testing.assert_allclose(ds["var1"], opened_ds["var1"])
     assert is_xarray_dataset
 
