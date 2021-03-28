@@ -36,18 +36,18 @@ def dump(url: str, variable: str):
 def _open_zarr(m: fsspec.FSMap) -> Union[zarr.hierarchy.Group, zarr.core.Array]:
     try:
         result = zarr.open_consolidated(m)
-        consolidated=True
+        consolidated = True
     except KeyError:
         # un-consolidated group, or array
         result = zarr.open(m)
-        consolidated=False
+        consolidated = False
 
     return result, consolidated
 
 
 def _zarr_object_is_xarray_dataset(
     obj: Union[zarr.hierarchy.Group, zarr.core.Array]
-    ) -> bool:
+) -> bool:
     try:
         array_keys = list(obj.keys())
     except AttributeError:
