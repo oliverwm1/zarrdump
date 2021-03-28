@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Tuple, Union
 
 import click
 import fsspec
@@ -15,14 +15,8 @@ def dump(url: str, variable: str):
         raise click.ClickException(f"No file or directory at {url}")
 
     m = fs.get_mapper(url)
-    zarr_obj, consolidated = _open_zarr(m)
-
-    if _zarr_object_is_xarray_dataset(zarr_obj):
-        printme = xr.open_zarr(m, consolidated=consolidated)
-        object_is_xarray = True
-    else:
-        printme = zarr_obj
-        object_is_xarray = False
+    consolidated = _metadata_is_consolidated(m)
+    printme, object_is_xarray = _open_with_xarray_or_zarr(m, consolidated)
 
     if variable is not None:
         printme = printme[variable]
@@ -33,27 +27,24 @@ def dump(url: str, variable: str):
     print(printme)
 
 
-def _open_zarr(m: fsspec.FSMap) -> Union[zarr.hierarchy.Group, zarr.core.Array]:
+def _metadata_is_consolidated(m: fsspec.FSMap) -> bool:
     try:
-        result = zarr.open_consolidated(m)
-        consolidated=True
+        zarr.open_consolidated(m)
+        consolidated = True
     except KeyError:
-        # un-consolidated group, or array
-        result = zarr.open(m)
-        consolidated=False
-
-    return result, consolidated
+        # group with un-consolidated metadata, or array
+        consolidated = False
+    return consolidated
 
 
-def _zarr_object_is_xarray_dataset(
-    obj: Union[zarr.hierarchy.Group, zarr.core.Array]
-    ) -> bool:
+def _open_with_xarray_or_zarr(
+    m: fsspec.FSMap, consolidated: bool
+) -> Tuple[Union[xr.Dataset, zarr.hierarchy.Group, zarr.core.Array], bool]:
     try:
-        array_keys = list(obj.keys())
-    except AttributeError:
+        result = xr.open_zarr(m, consolidated=consolidated)
+        is_xarray_dataset = True
+    except KeyError:
+        # xarray requires _ARRAY_DIMENSIONS attribute, assuming missing if KeyError
+        result = zarr.open_consolidated(m) if consolidated else zarr.open(m)
         is_xarray_dataset = False
-    else:
-        array = obj[array_keys[0]]
-        required_xarray_attr = xr.backends.zarr.DIMENSION_KEY
-        is_xarray_dataset = True if required_xarray_attr in array.attrs else False
-    return is_xarray_dataset
+    return result, is_xarray_dataset

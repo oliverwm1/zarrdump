@@ -1,3 +1,9 @@
+v0.2.2 (2021-03-28)
+-------------------
+
+- change implementation for checking whether object is an xarray dataset
+- apply black formatting
+
 v0.2.1 (2020-11-26)
 -------------------
 
