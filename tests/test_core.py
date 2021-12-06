@@ -71,9 +71,17 @@ def test_dump_executes_on_zarr_group(tmp_zarr_group, options):
     assert result.exit_code == 0
 
 
-@pytest.mark.parametrize("options", [[], ["-v", "var1"]])
+@pytest.mark.parametrize("options", [[], ["-v", "var1"], ["--info"]])
 def test_dump_executes_on_xarray_dataset(tmp_xarray_ds, options):
     runner = CliRunner()
     _, path = tmp_xarray_ds()
     result = runner.invoke(dump, [path] + options)
     assert result.exit_code == 0
+
+
+def test_dump_disallowed_options(tmp_xarray_ds):
+    runner = CliRunner()
+    _, path = tmp_xarray_ds()
+    result = runner.invoke(dump, [path, "-v", "var1", "-i"])
+    assert result.exit_code == 1
+    assert result.output == "Error: Cannot use both '-v' and '-i' options\n"

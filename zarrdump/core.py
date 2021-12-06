@@ -9,22 +9,28 @@ import zarr
 @click.command()
 @click.argument("url")
 @click.option("-v", "--variable", type=str, help="Dump variable's info")
-def dump(url: str, variable: str):
+@click.option("-i", "--info", is_flag=True, help="Use ncdump style")
+def dump(url: str, variable: str, info: bool):
     fs, _, _ = fsspec.get_fs_token_paths(url)
     if not fs.exists(url):
         raise click.ClickException(f"No file or directory at {url}")
 
     m = fs.get_mapper(url)
     consolidated = _metadata_is_consolidated(m)
-    printme, object_is_xarray = _open_with_xarray_or_zarr(m, consolidated)
+    object_, object_is_xarray = _open_with_xarray_or_zarr(m, consolidated)
 
     if variable is not None:
-        printme = printme[variable]
+        if info:
+            raise click.ClickException("Cannot use both '-v' and '-i' options")
+        object_ = object_[variable]
 
     if not object_is_xarray:
-        printme = printme.info
+        object_ = object_.info
 
-    print(printme)
+    if object_is_xarray and info:
+        object_.info()
+    else:
+        print(object_)
 
 
 def _metadata_is_consolidated(m: fsspec.FSMap) -> bool:
