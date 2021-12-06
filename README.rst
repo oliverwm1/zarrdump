@@ -1,3 +1,5 @@
+[![PyPI version shields.io](https://img.shields.io/pypi/v/ansicolortags.svg)](https://pypi.python.org/pypi/zarrdump)
+
 Describe `zarr <https://github.com/zarr-developers/zarr-python>`_ stores from the command line. A path to any filesystem implemented by `fsspec <https://github.com/intake/filesystem_spec>`_ is valid.
 
 Installation
