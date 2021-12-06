@@ -10,7 +10,7 @@ import zarr
 
 
 def test_version():
-    assert zarrdump.__version__ == "0.2.2"
+    assert zarrdump.__version__ == "0.3.0"
 
 
 @pytest.fixture()

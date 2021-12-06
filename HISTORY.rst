@@ -1,3 +1,8 @@
+v0.3.0 (2021-12-05)
+-------------------
+
+- add -i/--info flag to allow printing with ncdump-style using xr.Dataset.info()
+
 v0.2.2 (2021-03-28)
 -------------------
 
