@@ -1,3 +1,8 @@
+v0.4.0 (2022-08-13)
+-------------------
+
+- add -m/--max-rows option to allow setting the xarray display_max_rows option. Default is set to 999.
+
 v0.3.0 (2021-12-05)
 -------------------
 
