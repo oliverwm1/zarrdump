@@ -15,8 +15,10 @@ def test_version():
 
 @pytest.fixture()
 def tmp_xarray_ds(tmpdir):
-    def write_ds_to_zarr(consolidated=False):
-        ds = xr.Dataset({"var1": xr.DataArray(range(3))})
+    def write_ds_to_zarr(consolidated=False, n_vars=1):
+        ds = xr.Dataset(
+            {f"var{i}": xr.DataArray(range(3)) for i in range(1, n_vars + 1)}
+        )
         path = str(tmpdir.join("test.zarr"))
         ds.to_zarr(path, consolidated=consolidated)
         return ds, path
@@ -85,3 +87,17 @@ def test_dump_disallowed_options(tmp_xarray_ds):
     result = runner.invoke(dump, [path, "-v", "var1", "-i"])
     assert result.exit_code == 1
     assert result.output == "Error: Cannot use both '-v' and '-i' options\n"
+
+
+def test_dump_max_rows_default(tmp_xarray_ds):
+    runner = CliRunner()
+    _, path = tmp_xarray_ds(consolidated=True, n_vars=30)
+    result = runner.invoke(dump, [path])
+    assert len(result.output.split("\n")) > 30
+
+
+def test_dump_max_rows_limited(tmp_xarray_ds):
+    runner = CliRunner()
+    _, path = tmp_xarray_ds(consolidated=True, n_vars=30)
+    result = runner.invoke(dump, [path, "-m", 10])
+    assert len(result.output.split("\n")) < 20  # give some buffer over 10

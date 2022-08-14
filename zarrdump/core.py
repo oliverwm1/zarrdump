@@ -9,8 +9,9 @@ import zarr
 @click.command()
 @click.argument("url")
 @click.option("-v", "--variable", type=str, help="Dump variable's info")
+@click.option("-m", "--max-rows", default=999, help="Maximum number of rows to display")
 @click.option("-i", "--info", is_flag=True, help="Use ncdump style")
-def dump(url: str, variable: str, info: bool):
+def dump(url: str, variable: str, max_rows: int, info: bool):
     fs, _, _ = fsspec.get_fs_token_paths(url)
     if not fs.exists(url):
         raise click.ClickException(f"No file or directory at {url}")
@@ -30,7 +31,12 @@ def dump(url: str, variable: str, info: bool):
     if object_is_xarray and info:
         object_.info()
     else:
-        print(object_)
+        try:
+            with xr.set_options(display_max_rows=max_rows):
+                print(object_)
+        except ValueError:
+            # xarray<v0.18.0 does not have display_max_rows option
+            print(object_)
 
 
 def _metadata_is_consolidated(m: fsspec.FSMap) -> bool:
