@@ -55,7 +55,7 @@ def _open_with_xarray_or_zarr(
     try:
         result = xr.open_zarr(m, consolidated=consolidated)
         is_xarray_dataset = True
-    except KeyError:
+    except (KeyError, TypeError):
         # xarray requires _ARRAY_DIMENSIONS attribute, assuming missing if KeyError
         result = zarr.open_consolidated(m) if consolidated else zarr.open(m)
         is_xarray_dataset = False
