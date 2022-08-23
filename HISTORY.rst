@@ -1,3 +1,9 @@
+v0.4.1 (2022-08-22)
+-------------------
+
+- ensure can open and dump zarr group when xarray v2022.06.0 installed
+
+
 v0.4.0 (2022-08-13)
 -------------------
 
