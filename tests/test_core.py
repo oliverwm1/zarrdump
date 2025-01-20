@@ -1,5 +1,5 @@
 import zarrdump
-from zarrdump.core import dump, _open_with_xarray_or_zarr
+from zarrdump.core import dump
 
 from click.testing import CliRunner
 import fsspec
@@ -40,24 +40,6 @@ def tmp_zarr_group(tmpdir):
     return write_group_to_zarr
 
 
-@pytest.mark.parametrize("consolidated", [True, False])
-def test__open_with_xarray_or_zarr_on_zarr_group(tmp_zarr_group, consolidated):
-    group, path = tmp_zarr_group(consolidated=consolidated)
-    m = fsspec.get_mapper(path)
-    opened_group, is_xarray_dataset = _open_with_xarray_or_zarr(m, consolidated)
-    np.testing.assert_allclose(group["var1"], opened_group["var1"])
-    assert not is_xarray_dataset
-
-
-@pytest.mark.parametrize("consolidated", [True, False])
-def test__open_with_xarray_or_zarr_on_xarray_ds(tmp_xarray_ds, consolidated):
-    ds, path = tmp_xarray_ds(consolidated=consolidated)
-    m = fsspec.get_mapper(path)
-    opened_ds, is_xarray_dataset = _open_with_xarray_or_zarr(m, consolidated)
-    np.testing.assert_allclose(ds["var1"], opened_ds["var1"])
-    assert is_xarray_dataset
-
-
 def test_dump_non_existent_url():
     runner = CliRunner()
     result = runner.invoke(dump, ["non/existent/path"])
@@ -65,28 +47,51 @@ def test_dump_non_existent_url():
     assert result.output == "Error: No file or directory at non/existent/path\n"
 
 
-@pytest.mark.parametrize("options", [[], ["-v", "var1"]])
-def test_dump_executes_on_zarr_group(tmp_zarr_group, options):
+@pytest.mark.parametrize("consolidated", [True, False])
+@pytest.mark.parametrize("options", [["--zarr"], ["--zarr", "-v", "var1"]])
+def test_dump_executes_on_zarr_group(tmp_zarr_group, consolidated, options):
     runner = CliRunner()
-    _, path = tmp_zarr_group()
+    _, path = tmp_zarr_group(consolidated=consolidated)
     result = runner.invoke(dump, [path] + options)
     assert result.exit_code == 0
+    if "-v" in options:
+        assert "Array" in result.output
+    else:
+        assert "Group" in result.output
 
 
+@pytest.mark.parametrize("consolidated", [True, False])
 @pytest.mark.parametrize("options", [[], ["-v", "var1"], ["--info"]])
-def test_dump_executes_on_xarray_dataset(tmp_xarray_ds, options):
+def test_dump_executes_on_xarray_dataset(tmp_xarray_ds, consolidated, options):
     runner = CliRunner()
-    _, path = tmp_xarray_ds()
+    _, path = tmp_xarray_ds(consolidated=consolidated)
     result = runner.invoke(dump, [path] + options)
     assert result.exit_code == 0
 
+    if "-v" in options:
+        expected_content = "<xarray.DataArray"
+    elif "--info" in options:
+        expected_content = "xarray.Dataset"
+    else:
+        expected_content = "<xarray.Dataset>"
 
-def test_dump_disallowed_options(tmp_xarray_ds):
+    assert expected_content in result.output
+
+
+def test_dump_disallowed_options_variable_info(tmp_xarray_ds):
     runner = CliRunner()
     _, path = tmp_xarray_ds()
     result = runner.invoke(dump, [path, "-v", "var1", "-i"])
     assert result.exit_code == 1
     assert result.output == "Error: Cannot use both '-v' and '-i' options\n"
+
+
+def test_dump_disallowed_options_zarr_info(tmp_zarr_group):
+    runner = CliRunner()
+    _, path = tmp_zarr_group()
+    result = runner.invoke(dump, [path, "-z", "-i"])
+    assert result.exit_code == 1
+    assert result.output == "Error: Cannot use both '-z' and '-i' options\n"
 
 
 def test_dump_max_rows_default(tmp_xarray_ds):

@@ -42,10 +42,11 @@ Can show information for a particular variable/array:
         longname:  surface temperature
         units:     K
 
-Diagnostic information will also be printed for zarr arrays or zarr groups which do not represent xarray datasets:
+Diagnostic information can also be printed for zarr arrays or zarr groups which do not
+represent xarray datasets by using the `--zarr` flag:
 ::
 
-    $ zarrdump group.zarr
+    $ zarrdump --zarr group.zarr
     Name        : /
     Type        : zarr.hierarchy.Group
     Read-only   : False
