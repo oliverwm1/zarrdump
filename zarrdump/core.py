@@ -51,7 +51,7 @@ def _metadata_is_consolidated(m: fsspec.FSMap) -> bool:
 
 def _open_with_xarray_or_zarr(
     m: fsspec.FSMap, consolidated: bool
-) -> Tuple[Union[xr.Dataset, zarr.hierarchy.Group, zarr.core.Array], bool]:
+) -> Tuple[Union[xr.Dataset, zarr.Group, zarr.Array], bool]:
     try:
         result = xr.open_zarr(m, consolidated=consolidated)
         is_xarray_dataset = True
