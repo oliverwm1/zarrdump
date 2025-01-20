@@ -23,7 +23,7 @@ test_requirements = ["pytest"]
 setup(
     author="Oliver Watt-Meyer",
     author_email="oliverwatt@gmail.com",
-    python_requires=">=3.6",
+    python_requires=">=3.8",
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: Developers",
