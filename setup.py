@@ -51,5 +51,5 @@ setup(
     packages=find_packages(),
     test_suite="tests",
     tests_require=test_requirements,
-    version="0.4.1",
+    version="0.4.2",
 )

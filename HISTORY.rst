@@ -1,8 +1,13 @@
+v0.4.2 (2025-01-20)
+-------------------
+
+- pin zarr-python dependency to below version 3
+- specify python>=3.8 requirement in setup.py
+
 v0.4.1 (2022-08-22)
 -------------------
 
 - ensure can open and dump zarr group when xarray v2022.06.0 installed
-
 
 v0.4.0 (2022-08-13)
 -------------------
