@@ -15,7 +15,7 @@ requirements = [
     "click>=7.0.0",
     "fsspec>=0.7.0",
     "xarray>=0.15.0",
-    "zarr>=2.3.0",
+    "zarr>=2.3.0,<3",
 ]
 
 test_requirements = ["pytest"]
@@ -23,7 +23,7 @@ test_requirements = ["pytest"]
 setup(
     author="Oliver Watt-Meyer",
     author_email="oliverwatt@gmail.com",
-    python_requires=">=3.6",
+    python_requires=">=3.8",
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: Developers",
