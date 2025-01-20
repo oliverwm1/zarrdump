@@ -9,7 +9,8 @@ import xarray as xr
 import zarr
 
 
-ZARR_MAJOR_VERSION = zarr.__version__.split('.')[0]
+ZARR_MAJOR_VERSION = zarr.__version__.split(".")[0]
+
 
 def test_version():
     assert zarrdump.__version__ == "0.4.2"
@@ -55,6 +56,7 @@ def test__metadata_is_consolidated_on_zarr(tmp_zarr_group, consolidated):
 def test__metadata_is_consolidated_on_xarray(tmp_xarray_ds, consolidated):
     _, path = tmp_xarray_ds(consolidated=consolidated)
     assert consolidated == _metadata_is_consolidated(path)
+
 
 @pytest.mark.parametrize("consolidated", [True, False])
 def test__open_with_xarray_or_zarr_on_zarr_group(tmp_zarr_group, consolidated):
@@ -116,16 +118,3 @@ def test_dump_max_rows_limited(tmp_xarray_ds):
     _, path = tmp_xarray_ds(consolidated=True, n_vars=30)
     result = runner.invoke(dump, [path, "-m", 10])
     assert len(result.output.split("\n")) < 20  # give some buffer over 10
-
-
-def test_dump_executes_on_google_cloud_storage_url():
-    """This test uses a public dataset on GCS which could disappear at any time.
-    
-    Feel free to delete if it starts failing.
-    """
-    runner = CliRunner()
-    url = "gs://cmip6/CMIP6/ScenarioMIP/NCAR/CESM2/ssp245/r1i1p1f1/Amon/tas/gn/v20190730"
-    result = runner.invoke(dump, [url])
-    assert result.exit_code == 0
-    assert "<xarray.Dataset>" in result.output
-    assert "Dimensions:" in result.output
