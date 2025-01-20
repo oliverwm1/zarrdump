@@ -16,9 +16,8 @@ def dump(url: str, variable: str, max_rows: int, info: bool):
     if not fs.exists(url):
         raise click.ClickException(f"No file or directory at {url}")
 
-    m = fs.get_mapper(url)
-    consolidated = _metadata_is_consolidated(m)
-    object_, object_is_xarray = _open_with_xarray_or_zarr(m, consolidated)
+    consolidated = _metadata_is_consolidated(url)
+    object_, object_is_xarray = _open_with_xarray_or_zarr(url, consolidated)
 
     if variable is not None:
         if info:
@@ -39,24 +38,24 @@ def dump(url: str, variable: str, max_rows: int, info: bool):
             print(object_)
 
 
-def _metadata_is_consolidated(m: fsspec.FSMap) -> bool:
+def _metadata_is_consolidated(url: str) -> bool:
     try:
-        zarr.open_consolidated(m)
+        zarr.open_consolidated(url)
         consolidated = True
-    except KeyError:
+    except (KeyError, ValueError):  # KeyError for zarr v2, ValueError for zarr v3
         # group with un-consolidated metadata, or array
         consolidated = False
     return consolidated
 
 
 def _open_with_xarray_or_zarr(
-    m: fsspec.FSMap, consolidated: bool
+    url: str, consolidated: bool
 ) -> Tuple[Union[xr.Dataset, zarr.Group, zarr.Array], bool]:
     try:
-        result = xr.open_zarr(m, consolidated=consolidated)
+        result = xr.open_zarr(url, consolidated=consolidated)
         is_xarray_dataset = True
-    except (KeyError, TypeError):
+    except (KeyError, TypeError, ValueError):
         # xarray requires _ARRAY_DIMENSIONS attribute, assuming missing if KeyError
-        result = zarr.open_consolidated(m) if consolidated else zarr.open(m)
+        result = zarr.open_consolidated(url) if consolidated else zarr.open(url)
         is_xarray_dataset = False
     return result, is_xarray_dataset
