@@ -116,3 +116,16 @@ def test_dump_max_rows_limited(tmp_xarray_ds):
     _, path = tmp_xarray_ds(consolidated=True, n_vars=30)
     result = runner.invoke(dump, [path, "-m", 10])
     assert len(result.output.split("\n")) < 20  # give some buffer over 10
+
+
+def test_dump_executes_on_google_cloud_storage_url():
+    """This test uses a public dataset on GCS which could disappear at any time.
+    
+    Feel free to delete if it starts failing.
+    """
+    runner = CliRunner()
+    url = "gs://cmip6/CMIP6/ScenarioMIP/NCAR/CESM2/ssp245/r1i1p1f1/Amon/tas/gn/v20190730"
+    result = runner.invoke(dump, [url])
+    assert result.exit_code == 0
+    assert "<xarray.Dataset>" in result.output
+    assert "Dimensions:" in result.output
