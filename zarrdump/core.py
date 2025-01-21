@@ -18,8 +18,7 @@ def dump(url: str, variable: str, max_rows: int, info: bool):
     if not fs.exists(url):
         raise click.ClickException(f"No file or directory at {url}")
 
-    consolidated = _metadata_is_consolidated(url)
-    object_, object_is_xarray = _open_with_xarray_or_zarr(url, consolidated)
+    object_, object_is_xarray = _open_with_xarray_or_zarr(url)
 
     if variable is not None:
         if info:
@@ -40,24 +39,8 @@ def dump(url: str, variable: str, max_rows: int, info: bool):
             print(object_)
 
 
-def _metadata_is_consolidated(url: str) -> bool:
-    if ZARR_MAJOR_VERSION >= "3":
-        exception = ValueError
-    else:
-        exception = KeyError
-
-    try:
-        zarr.open_consolidated(url)
-        consolidated = True
-    except exception:
-        # group with un-consolidated metadata, or array
-        consolidated = False
-
-    return consolidated
-
-
 def _open_with_xarray_or_zarr(
-    url: str, consolidated: bool
+    url: str,
 ) -> Tuple[Union[xr.Dataset, zarr.Group, zarr.Array], bool]:
     if ZARR_MAJOR_VERSION >= "3":
         exceptions = (ValueError,)
@@ -65,11 +48,11 @@ def _open_with_xarray_or_zarr(
         exceptions = (KeyError, TypeError)
 
     try:
-        result = xr.open_zarr(url, consolidated=consolidated)
+        result = xr.open_zarr(url)
         is_xarray_dataset = True
     except exceptions:
         # xarray cannot open dataset, fall back to using zarr directly
-        result = zarr.open_consolidated(url) if consolidated else zarr.open(url)
+        result = zarr.open(url)
         is_xarray_dataset = False
 
     return result, is_xarray_dataset

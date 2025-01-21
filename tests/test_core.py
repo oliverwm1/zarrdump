@@ -1,5 +1,5 @@
 import zarrdump
-from zarrdump.core import dump, _open_with_xarray_or_zarr, _metadata_is_consolidated
+from zarrdump.core import dump, _open_with_xarray_or_zarr
 
 from click.testing import CliRunner
 import fsspec
@@ -47,21 +47,9 @@ def tmp_zarr_group(tmpdir):
 
 
 @pytest.mark.parametrize("consolidated", [True, False])
-def test__metadata_is_consolidated_on_zarr(tmp_zarr_group, consolidated):
-    _, path = tmp_zarr_group(consolidated=consolidated)
-    assert consolidated == _metadata_is_consolidated(path)
-
-
-@pytest.mark.parametrize("consolidated", [True, False])
-def test__metadata_is_consolidated_on_xarray(tmp_xarray_ds, consolidated):
-    _, path = tmp_xarray_ds(consolidated=consolidated)
-    assert consolidated == _metadata_is_consolidated(path)
-
-
-@pytest.mark.parametrize("consolidated", [True, False])
 def test__open_with_xarray_or_zarr_on_zarr_group(tmp_zarr_group, consolidated):
     group, path = tmp_zarr_group(consolidated=consolidated)
-    opened_group, is_xarray_dataset = _open_with_xarray_or_zarr(path, consolidated)
+    opened_group, is_xarray_dataset = _open_with_xarray_or_zarr(path)
     np.testing.assert_allclose(group["var1"], opened_group["var1"])
     assert not is_xarray_dataset
 
@@ -69,7 +57,7 @@ def test__open_with_xarray_or_zarr_on_zarr_group(tmp_zarr_group, consolidated):
 @pytest.mark.parametrize("consolidated", [True, False])
 def test__open_with_xarray_or_zarr_on_xarray_ds(tmp_xarray_ds, consolidated):
     ds, path = tmp_xarray_ds(consolidated=consolidated)
-    opened_ds, is_xarray_dataset = _open_with_xarray_or_zarr(path, consolidated)
+    opened_ds, is_xarray_dataset = _open_with_xarray_or_zarr(path)
     np.testing.assert_allclose(ds["var1"], opened_ds["var1"])
     assert is_xarray_dataset
 
@@ -84,7 +72,7 @@ def test_dump_non_existent_url():
 @pytest.mark.parametrize("options", [[], ["-v", "var1"]])
 def test_dump_executes_on_zarr_group(tmp_zarr_group, options):
     runner = CliRunner()
-    _, path = tmp_zarr_group()
+    _, path = tmp_zarr_group(consolidated=True)
     result = runner.invoke(dump, [path] + options)
     assert result.exit_code == 0
 
@@ -92,14 +80,14 @@ def test_dump_executes_on_zarr_group(tmp_zarr_group, options):
 @pytest.mark.parametrize("options", [[], ["-v", "var1"], ["--info"]])
 def test_dump_executes_on_xarray_dataset(tmp_xarray_ds, options):
     runner = CliRunner()
-    _, path = tmp_xarray_ds()
+    _, path = tmp_xarray_ds(consolidated=True)
     result = runner.invoke(dump, [path] + options)
     assert result.exit_code == 0
 
 
 def test_dump_disallowed_options(tmp_xarray_ds):
     runner = CliRunner()
-    _, path = tmp_xarray_ds()
+    _, path = tmp_xarray_ds(consolidated=True)
     result = runner.invoke(dump, [path, "-v", "var1", "-i"])
     assert result.exit_code == 1
     assert result.output == "Error: Cannot use both '-v' and '-i' options\n"
