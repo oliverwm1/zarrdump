@@ -14,7 +14,7 @@ with open("HISTORY.rst") as history_file:
 requirements = [
     "click>=7.0.0",
     "fsspec>=0.7.0",
-    "xarray>=0.15.0",
+    "xarray>=0.19.0",
     "zarr>=2.3.0",
 ]
 
