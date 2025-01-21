@@ -2,7 +2,6 @@ import zarrdump
 from zarrdump.core import dump, _open_with_xarray_or_zarr
 
 from click.testing import CliRunner
-import fsspec
 import pytest
 import numpy as np
 import xarray as xr
