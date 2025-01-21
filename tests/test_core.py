@@ -75,6 +75,10 @@ def test_dump_executes_on_zarr_group(tmp_zarr_group, options):
     _, path = tmp_zarr_group(consolidated=True)
     result = runner.invoke(dump, [path] + options)
     assert result.exit_code == 0
+    if "-v" in options:
+        assert "Array" in result.output
+    else:
+        assert "Group" in result.output
 
 
 @pytest.mark.parametrize("options", [[], ["-v", "var1"], ["--info"]])
@@ -83,6 +87,13 @@ def test_dump_executes_on_xarray_dataset(tmp_xarray_ds, options):
     _, path = tmp_xarray_ds(consolidated=True)
     result = runner.invoke(dump, [path] + options)
     assert result.exit_code == 0
+    if "-v" in options:
+        expected_content = "<xarray.DataArray"
+    elif "--info" in options:
+        expected_content = "xarray.Dataset"
+    else:
+        expected_content = "<xarray.Dataset>"
+    assert expected_content in result.output
 
 
 def test_dump_disallowed_options(tmp_xarray_ds):
