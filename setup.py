@@ -18,7 +18,7 @@ requirements = [
     "zarr>=2.3.0",
 ]
 
-test_requirements = ["pytest", "gcsfs"]
+test_requirements = ["pytest"]
 
 setup(
     author="Oliver Watt-Meyer",
