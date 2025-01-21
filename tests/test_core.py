@@ -100,7 +100,6 @@ def test_dump_max_rows_default(tmp_xarray_ds):
     assert len(result.output.split("\n")) > 30
 
 
-@pytest.mark.skipif(xr.__version__ < "0.18.0", reason="need xarray v0.18.0 or higher")
 def test_dump_max_rows_limited(tmp_xarray_ds):
     runner = CliRunner()
     _, path = tmp_xarray_ds(consolidated=True, n_vars=30)

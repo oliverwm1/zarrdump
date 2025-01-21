@@ -31,11 +31,7 @@ def dump(url: str, variable: str, max_rows: int, info: bool):
     if object_is_xarray and info:
         object_.info()
     else:
-        try:
-            with xr.set_options(display_max_rows=max_rows):
-                print(object_)
-        except ValueError:
-            # xarray<v0.18.0 does not have display_max_rows option
+        with xr.set_options(display_max_rows=max_rows):
             print(object_)
 
 
