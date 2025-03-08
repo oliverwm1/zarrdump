@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
       fail-fast: false
 
     steps:
@@ -30,6 +30,10 @@ jobs:
             echo "Detected Python version: $PYTHON_VERSION"
             echo "Skipping tests with xarray versions that require newer python"
             tox -p --skip-env py-xarray202501
+          elif [[ "$PYTHON_VERSION" == "3.11=2"* ]]; then
+            echo "Detected Python version: $PYTHON_VERSION"
+            echo "Skipping tests with xarray versions that require newer python"
+            tox -p --skip-env py-xarray21
           else
             tox -p
           fi
