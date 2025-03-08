@@ -31,7 +31,7 @@ classifiers = [
 ]
 [project.urls]
 Homepage = "https://github.com/oliverwm1/zarrdump"
-Changelog = "https://github.com/oliverwm1/zarrdump/HISTORY.rst"
+Changelog = "https://github.com/oliverwm1/zarrdump/blob/main/HISTORY.rst"
 
 [project.scripts]
 zarrdump = "zarrdump.core:dump"
