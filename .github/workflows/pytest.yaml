@@ -26,7 +26,7 @@ jobs:
         run: |
           PYTHON_VERSION=$(python --version | cut -d' ' -f2)
           
-          if [[ "$PYTHON_VERSION" == "3.9"* ]]; then
+          if [[ "$PYTHON_VERSION" == "3.9"*  || "$PYTHON_VERSION" == "3.10"* ]]; then
             echo "Detected Python version: $PYTHON_VERSION"
             echo "Skipping tests with xarray versions that require newer python"
             tox -p --skip-env py-xarray202501
