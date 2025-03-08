@@ -1,5 +1,5 @@
-latest
-------
+v0.5.0 (2025-03--07)
+-------------------
 
 - add support for zarr-python>=3.0.0
 - drop support for xarray<0.19.0

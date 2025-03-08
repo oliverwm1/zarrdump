@@ -1,18 +1,17 @@
-import zarrdump
-from zarrdump.core import dump, _open_with_xarray_or_zarr
-
-from click.testing import CliRunner
-import pytest
 import numpy as np
+import pytest
 import xarray as xr
 import zarr
+from click.testing import CliRunner
 
+import zarrdump
+from zarrdump.core import _open_with_xarray_or_zarr, dump
 
 ZARR_MAJOR_VERSION = zarr.__version__.split(".")[0]
 
 
 def test_version():
-    assert zarrdump.__version__ == "0.4.2"
+    assert zarrdump.__version__ == "0.5.0"
 
 
 @pytest.fixture()
