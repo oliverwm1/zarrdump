@@ -24,7 +24,8 @@ test:
 	pytest
 
 dist:
-	python setup.py sdist bdist_wheel
+	rm -rf dist
+	python -m build
 
 release: dist
 	python -m twine upload dist/*
