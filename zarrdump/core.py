@@ -5,6 +5,8 @@ import fsspec
 import xarray as xr
 import zarr
 
+ZARR_MAJOR_VERSION = zarr.__version__.split(".")[0]
+
 
 @click.command()
 @click.argument("url")
@@ -16,9 +18,7 @@ def dump(url: str, variable: str, max_rows: int, info: bool):
     if not fs.exists(url):
         raise click.ClickException(f"No file or directory at {url}")
 
-    m = fs.get_mapper(url)
-    consolidated = _metadata_is_consolidated(m)
-    object_, object_is_xarray = _open_with_xarray_or_zarr(m, consolidated)
+    object_, object_is_xarray = _open_with_xarray_or_zarr(url)
 
     if variable is not None:
         if info:
@@ -31,32 +31,26 @@ def dump(url: str, variable: str, max_rows: int, info: bool):
     if object_is_xarray and info:
         object_.info()
     else:
-        try:
-            with xr.set_options(display_max_rows=max_rows):
-                print(object_)
-        except ValueError:
-            # xarray<v0.18.0 does not have display_max_rows option
+        with xr.set_options(display_max_rows=max_rows):
             print(object_)
 
 
-def _metadata_is_consolidated(m: fsspec.FSMap) -> bool:
-    try:
-        zarr.open_consolidated(m)
-        consolidated = True
-    except KeyError:
-        # group with un-consolidated metadata, or array
-        consolidated = False
-    return consolidated
-
-
 def _open_with_xarray_or_zarr(
-    m: fsspec.FSMap, consolidated: bool
-) -> Tuple[Union[xr.Dataset, zarr.hierarchy.Group, zarr.core.Array], bool]:
+    url: str,
+) -> Tuple[Union[xr.Dataset, zarr.Group, zarr.Array], bool]:
+    if ZARR_MAJOR_VERSION >= "3":
+        # TODO: remove ValueError here once a version of xarray is released
+        # with https://github.com/pydata/xarray/pull/10025 merged
+        exceptions = (KeyError, ValueError)
+    else:
+        exceptions = (KeyError, TypeError)
+
     try:
-        result = xr.open_zarr(m, consolidated=consolidated)
+        result = xr.open_zarr(url)
         is_xarray_dataset = True
-    except (KeyError, TypeError):
-        # xarray requires _ARRAY_DIMENSIONS attribute, assuming missing if KeyError
-        result = zarr.open_consolidated(m) if consolidated else zarr.open(m)
+    except exceptions:
+        # xarray cannot open dataset, fall back to using zarr directly
+        result = zarr.open(url)
         is_xarray_dataset = False
+
     return result, is_xarray_dataset

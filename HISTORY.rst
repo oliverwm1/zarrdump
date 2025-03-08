@@ -1,3 +1,11 @@
+latest
+------
+
+- add support for zarr-python>=3.0.0
+- drop support for xarray<0.19.0
+- defer to xarray/zarr for handling consolidated metadata
+
+
 v0.4.2 (2025-01-20)
 -------------------
 
