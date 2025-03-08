@@ -39,7 +39,9 @@ def _open_with_xarray_or_zarr(
     url: str,
 ) -> Tuple[Union[xr.Dataset, zarr.Group, zarr.Array], bool]:
     if ZARR_MAJOR_VERSION >= "3":
-        exceptions = (ValueError,)
+        # TODO: remove ValueError here once a version of xarray is released
+        # with https://github.com/pydata/xarray/pull/10025 merged
+        exceptions = (KeyError, ValueError)
     else:
         exceptions = (KeyError, TypeError)
 
