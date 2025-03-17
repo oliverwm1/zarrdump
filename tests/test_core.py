@@ -114,3 +114,22 @@ def test_dump_max_rows_limited(tmp_xarray_ds):
     _, path = tmp_xarray_ds(consolidated=True, n_vars=30)
     result = runner.invoke(dump, [path, "-m", 10])
     assert len(result.output.split("\n")) < 20  # give some buffer over 10
+
+
+@pytest.mark.parametrize("token", ["anon", "invalid_test_token"])
+def test_storage_options(token):
+    runner = CliRunner()
+    result = runner.invoke(
+        dump,
+        [
+            "--storage-option",
+            f"token={token}",
+            "gs://gcp-public-data-arco-era5/co/single-level-reanalysis.zarr",
+        ]
+    )
+    if token == "anon":
+        assert result.exit_code == 0
+        assert len(result.output.split("\n")) > 30
+    else:
+        assert result.exit_code == 1
+        assert str(result.exception) == "Invalid Credentials, 401"
