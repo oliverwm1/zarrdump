@@ -33,7 +33,7 @@ def _attributes_to_dict(
 @click.option(
     "--storage-option",
     help="Key/value pair separated by '=', to be passed to the storage_options "
-         "argument of fsspec. It can be used multiple times to pass multime arguments. "
+         "argument of fsspec. It can be used multiple times to pass multiple arguments. "
          "example: --storage-option profile=contabo "
          "--storage-option endpoint=https://eu2.contabostorage.com",
     multiple=True,
