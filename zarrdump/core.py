@@ -1,4 +1,4 @@
-from typing import Tuple, Union
+from typing import Optional, Tuple, Union
 
 import fsspec
 import click
@@ -10,7 +10,7 @@ ZARR_MAJOR_VERSION = zarr.__version__.split(".")[0]
 
 # From https://stackoverflow.com/questions/51164033/python-click-multiple-key-value-pair-arguments
 def _attributes_to_dict(
-    ctx: click.Context, attribute: click.Option, attributes: tuple[str, ...] | None
+    ctx: click.Context, attribute: click.Option, attributes: Optional[tuple[str, ...]]
 ) -> dict[str, str]:
     """Click callback that converts attributes specified in the form `key=value` to a
     dictionary"""
