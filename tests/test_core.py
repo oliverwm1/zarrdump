@@ -11,7 +11,7 @@ ZARR_MAJOR_VERSION = zarr.__version__.split(".")[0]
 
 
 def test_version():
-    assert zarrdump.__version__ == "0.5.0"
+    assert zarrdump.__version__ == "0.6.0"
 
 
 @pytest.fixture()
@@ -125,7 +125,7 @@ def test_storage_options(token):
             "--storage-option",
             f"token={token}",
             "gs://gcp-public-data-arco-era5/co/single-level-reanalysis.zarr",
-        ]
+        ],
     )
     if token == "anon":
         assert result.exit_code == 0

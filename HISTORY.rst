@@ -1,10 +1,15 @@
+v0.6.0 (2025-04-02)
+-------------------
+
+- add gcsfs to tox testenv
+- add `--storage-option` flag (contributed by @garciampred in https://github.com/oliverwm1/zarrdump/pull/18)
+
 v0.5.0 (2025-03-07)
 -------------------
 
 - add support for zarr-python>=3.0.0
 - drop support for xarray<0.19.0
 - defer to xarray/zarr for handling consolidated metadata
-
 
 v0.4.2 (2025-01-20)
 -------------------
