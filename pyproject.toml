@@ -40,4 +40,7 @@ zarrdump = "zarrdump.core:dump"
 packages = ["zarrdump"]
 
 [project.optional-dependencies]
-test = ["pytest"]
+dev = ["pre-commit", "pytest", "ruff"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
