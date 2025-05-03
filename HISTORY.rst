@@ -1,3 +1,9 @@
+unreleased
+----------
+
+- drop support for python 3.8
+
+
 v0.6.0 (2025-04-02)
 -------------------
 
