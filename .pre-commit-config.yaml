@@ -11,3 +11,4 @@ repos:
     - id: check-added-large-files
       args: [--maxkb=250]
     - id: trailing-whitespace
+    - id: end-of-file-fixer
