@@ -1,7 +1,7 @@
 from typing import Optional, Tuple, Union
 
-import fsspec
 import click
+import fsspec
 import xarray as xr
 import zarr
 
@@ -33,12 +33,12 @@ def _attributes_to_dict(
 @click.option(
     "--storage-option",
     help="Key/value pair separated by '=', to be passed to the storage_options "
-         "argument of fsspec. It can be used multiple times to pass multiple arguments. "
-         "example: --storage-option profile=contabo "
-         "--storage-option endpoint=https://eu2.contabostorage.com",
+    "argument of fsspec. It can be used multiple times to pass multiple "
+    "arguments. For example: --storage-option profile=contabo "
+    "--storage-option endpoint=https://eu2.contabostorage.com",
     multiple=True,
     callback=_attributes_to_dict,
-    default=None
+    default=None,
 )
 def dump(url: str, variable: str, max_rows: int, info: bool, storage_option: dict):
     fs, _, _ = fsspec.get_fs_token_paths(url, storage_options=storage_option)
