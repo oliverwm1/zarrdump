@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, Union
+from typing import Optional, Union
 
 import click
 import fsspec
@@ -64,7 +64,7 @@ def dump(url: str, variable: str, max_rows: int, info: bool, storage_option: dic
 
 def _open_with_xarray_or_zarr(
     url: str, storage_option: dict
-) -> Tuple[Union[xr.Dataset, zarr.Group, zarr.Array], bool]:
+) -> tuple[Union[xr.Dataset, zarr.Group, zarr.Array], bool]:
     if ZARR_MAJOR_VERSION >= "3":
         # TODO: remove ValueError here once a version of xarray is released
         # with https://github.com/pydata/xarray/pull/10025 merged

@@ -43,4 +43,4 @@ packages = ["zarrdump"]
 dev = ["pre-commit", "pytest", "ruff"]
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "W"]
+select = ["E", "F", "I", "W", "UP"]
