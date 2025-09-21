@@ -11,11 +11,13 @@ ZARR_MAJOR_VERSION = zarr.__version__.split(".")[0]
 # From https://stackoverflow.com/questions/51164033/python-click-multiple-key-value-pair-arguments
 def _attributes_to_dict(
     ctx: click.Context, attribute: click.Option, attributes: Optional[tuple[str, ...]]
-) -> dict[str, str]:
+) -> Optional[dict[str, str]]:
     """Click callback that converts attributes specified in the form `key=value` to a
     dictionary"""
-    result = {}
-    if attributes is not None:
+    if attributes is None or len(attributes) == 0:
+        return None
+    else:
+        result = {}
         for arg in attributes:
             k, v = arg.split("=")
             if k in result:
@@ -40,7 +42,13 @@ def _attributes_to_dict(
     callback=_attributes_to_dict,
     default=None,
 )
-def dump(url: str, variable: str, max_rows: int, info: bool, storage_option: dict):
+def dump(
+    url: str,
+    variable: str,
+    max_rows: int,
+    info: bool,
+    storage_option: Optional[dict[str, str]],
+):
     fs, _, _ = fsspec.get_fs_token_paths(url, storage_options=storage_option)
     if not fs.exists(url):
         raise click.ClickException(f"No file or directory at {url}")
@@ -63,7 +71,7 @@ def dump(url: str, variable: str, max_rows: int, info: bool, storage_option: dic
 
 
 def _open_with_xarray_or_zarr(
-    url: str, storage_option: dict
+    url: str, storage_option: Optional[dict[str, str]] = None
 ) -> tuple[Union[xr.Dataset, zarr.Group, zarr.Array], bool]:
     if ZARR_MAJOR_VERSION >= "3":
         # TODO: remove ValueError here once a version of xarray is released
