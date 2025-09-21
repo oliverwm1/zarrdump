@@ -1,8 +1,9 @@
-unreleased
-----------
+v0.6.1 (2025-09-21)
+-------------------
 
 - drop support for python 3.8
-
+- add tox environment for xarray 2025.09.0 and zarr-python>=3.1
+- resolve issue where non-None storage options were being used when opening a local zarr (resolves https://github.com/oliverwm1/zarrdump/issues/21)
 
 v0.6.0 (2025-04-02)
 -------------------
