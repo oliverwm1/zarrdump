@@ -1,5 +1,3 @@
-from typing import Optional, Union
-
 import click
 import fsspec
 import xarray as xr
@@ -10,8 +8,8 @@ ZARR_MAJOR_VERSION = zarr.__version__.split(".")[0]
 
 # From https://stackoverflow.com/questions/51164033/python-click-multiple-key-value-pair-arguments
 def _attributes_to_dict(
-    ctx: click.Context, attribute: click.Option, attributes: Optional[tuple[str, ...]]
-) -> Optional[dict[str, str]]:
+    ctx: click.Context, attribute: click.Option, attributes: tuple[str, ...] | None
+) -> dict[str, str] | None:
     """Click callback that converts attributes specified in the form `key=value` to a
     dictionary"""
     if attributes is None or len(attributes) == 0:
@@ -47,7 +45,7 @@ def dump(
     variable: str,
     max_rows: int,
     info: bool,
-    storage_option: Optional[dict[str, str]],
+    storage_option: dict[str, str] | None,
 ):
     fs, _, _ = fsspec.get_fs_token_paths(url, storage_options=storage_option)
     if not fs.exists(url):
@@ -71,8 +69,8 @@ def dump(
 
 
 def _open_with_xarray_or_zarr(
-    url: str, storage_option: Optional[dict[str, str]] = None
-) -> tuple[Union[xr.Dataset, zarr.Group, zarr.Array], bool]:
+    url: str, storage_option: dict[str, str] | None = None
+) -> tuple[xr.Dataset | zarr.Group | zarr.Array, bool]:
     if ZARR_MAJOR_VERSION >= "3":
         # TODO: remove ValueError here once a version of xarray is released
         # with https://github.com/pydata/xarray/pull/10025 merged
