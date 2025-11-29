@@ -11,7 +11,7 @@ license = { text = "BSD 3-Clause license" }
 authors = [
     { name = "Oliver Watt-Meyer", email = "oliverwatt@gmail.com" }
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
     "click>=7.0.0",
     "fsspec>=0.7.0",
@@ -24,7 +24,6 @@ classifiers = [
     "License :: OSI Approved :: BSD License",
     "Natural Language :: English",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
