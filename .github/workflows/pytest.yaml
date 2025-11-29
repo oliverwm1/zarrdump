@@ -30,10 +30,19 @@ jobs:
             echo "Detected Python version: $PYTHON_VERSION"
             echo "Skipping tests with xarray versions that require newer python"
             tox -p --skip-env py-xarray2025
-          elif [[ "$PYTHON_VERSION" == "3.12"* || "$PYTHON_VERSION" == "3.13"* || "$PYTHON_VERSION" == "3.14"* ]]; then
+          elif [[ "$PYTHON_VERSION" == "3.12"* ]]; then
             echo "Detected Python version: $PYTHON_VERSION"
             echo "Skipping py-xarray21 environment which fails with newer python versions"
             tox -p --skip-env py-xarray21
+          elif [[ "$PYTHON_VERSION" == "3.13"* ]]; then
+            echo "Detected Python version: $PYTHON_VERSION"
+            echo "Running only in environments which build quickly"
+            tox -p -e py-xarray202312,py-xarray202501,py-xarray202509
+          else
+          elif [[ "$PYTHON_VERSION" == "3.14"* ]]; then
+            echo "Detected Python version: $PYTHON_VERSION"
+            echo "Running only in environments which build quickly"
+            tox -p -e py-xarray202501,py-xarray202509
           else
             tox -p
           fi
