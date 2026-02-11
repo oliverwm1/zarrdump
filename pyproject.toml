@@ -42,6 +42,7 @@ packages = ["zarrdump"]
 
 [project.optional-dependencies]
 dev = ["pre-commit", "pytest", "ruff"]
+obstore = ["obstore"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "W", "UP"]

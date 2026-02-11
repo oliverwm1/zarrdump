@@ -133,3 +133,30 @@ def test_storage_options(token):
     else:
         assert result.exit_code == 1
         assert str(result.exception) == "Invalid Credentials, 401"
+
+
+def test_obstore_missing_import(monkeypatch, tmp_xarray_ds):
+    import builtins
+
+    real_import = builtins.__import__
+
+    def mock_import(name, *args, **kwargs):
+        if name == "obstore":
+            raise ImportError("No module named 'obstore'")
+        return real_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", mock_import)
+    _, path = tmp_xarray_ds(consolidated=True)
+    runner = CliRunner()
+    result = runner.invoke(dump, ["--obstore", path])
+    assert result.exit_code == 1
+    assert "pip install zarrdump[obstore]" in result.output
+
+
+def test_obstore_with_local_path(tmp_xarray_ds):
+    pytest.importorskip("obstore")
+    _, path = tmp_xarray_ds(consolidated=True)
+    runner = CliRunner()
+    result = runner.invoke(dump, ["--obstore", path])
+    assert result.exit_code == 0
+    assert "<xarray.Dataset>" in result.output
