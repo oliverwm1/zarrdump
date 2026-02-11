@@ -135,6 +135,16 @@ def test_storage_options(token):
         assert str(result.exception) == "Invalid Credentials, 401"
 
 
+def test_obstore_and_storage_option_mutually_exclusive(tmp_xarray_ds):
+    _, path = tmp_xarray_ds(consolidated=True)
+    runner = CliRunner()
+    result = runner.invoke(
+        dump, ["--obstore", "--storage-option", "key=value", path]
+    )
+    assert result.exit_code == 1
+    assert "Cannot use both '--obstore' and '--storage-option'" in result.output
+
+
 def test_obstore_missing_import(monkeypatch, tmp_xarray_ds):
     import builtins
 

@@ -54,6 +54,11 @@ def dump(
     storage_option: dict[str, str] | None,
     use_obstore: bool,
 ):
+    if use_obstore and storage_option is not None:
+        raise click.ClickException(
+            "Cannot use both '--obstore' and '--storage-option' options"
+        )
+
     if use_obstore:
         try:
             import obstore as obs
@@ -69,11 +74,9 @@ def dump(
         path = Path(url)
         if path.exists():
             obstore_url = path.resolve().as_uri()
-        store = obs.store.from_url(obstore_url, **(storage_option or {}))
+        store = obs.store.from_url(obstore_url)
         zarr_store = ObjectStore(store)
-        object_, object_is_xarray = _open_with_xarray_or_zarr(
-            zarr_store, storage_option=None
-        )
+        object_, object_is_xarray = _open_with_xarray_or_zarr(zarr_store)
     else:
         fs, _, _ = fsspec.get_fs_token_paths(url, storage_options=storage_option)
         if not fs.exists(url):
