@@ -138,9 +138,7 @@ def test_storage_options(token):
 def test_obstore_and_storage_option_mutually_exclusive(tmp_xarray_ds):
     _, path = tmp_xarray_ds(consolidated=True)
     runner = CliRunner()
-    result = runner.invoke(
-        dump, ["--obstore", "--storage-option", "key=value", path]
-    )
+    result = runner.invoke(dump, ["--obstore", "--storage-option", "key=value", path])
     assert result.exit_code == 1
     assert "Cannot use both '--obstore' and '--storage-option'" in result.output
 
