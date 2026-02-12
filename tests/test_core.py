@@ -132,7 +132,9 @@ def test_storage_options(token):
         assert len(result.output.split("\n")) > 30
     else:
         assert result.exit_code == 1
-        assert str(result.exception) == "Invalid Credentials, 401"
+        msg = str(result.exception)
+        # message differs based on gcsfs version
+        assert "token" in msg or "Invalid credentials" in msg
 
 
 def test_obstore_and_storage_option_mutually_exclusive(tmp_xarray_ds):
