@@ -40,18 +40,48 @@ def _attributes_to_dict(
     callback=_attributes_to_dict,
     default=None,
 )
+@click.option(
+    "--obstore",
+    "use_obstore",
+    is_flag=True,
+    help="Use obstore backend instead of fsspec",
+)
 def dump(
     url: str,
     variable: str,
     max_rows: int,
     info: bool,
     storage_option: dict[str, str] | None,
+    use_obstore: bool,
 ):
-    fs, _, _ = fsspec.get_fs_token_paths(url, storage_options=storage_option)
-    if not fs.exists(url):
-        raise click.ClickException(f"No file or directory at {url}")
+    if use_obstore and storage_option is not None:
+        raise click.ClickException(
+            "Cannot use both '--obstore' and '--storage-option' options"
+        )
 
-    object_, object_is_xarray = _open_with_xarray_or_zarr(url, storage_option)
+    if use_obstore:
+        try:
+            import obstore as obs
+            from zarr.storage import ObjectStore
+        except ImportError:
+            raise click.ClickException(
+                "The obstore package is required for --obstore. "
+                "Install it with: pip install zarrdump[obstore]"
+            )
+        from pathlib import Path
+
+        obstore_url = url
+        path = Path(url)
+        if path.exists():
+            obstore_url = path.resolve().as_uri()
+        store = obs.store.from_url(obstore_url)
+        zarr_store = ObjectStore(store)
+        object_, object_is_xarray = _open_with_xarray_or_zarr(zarr_store)
+    else:
+        fs, _, _ = fsspec.get_fs_token_paths(url, storage_options=storage_option)
+        if not fs.exists(url):
+            raise click.ClickException(f"No file or directory at {url}")
+        object_, object_is_xarray = _open_with_xarray_or_zarr(url, storage_option)
 
     if variable is not None:
         if info:
@@ -69,7 +99,7 @@ def dump(
 
 
 def _open_with_xarray_or_zarr(
-    url: str, storage_option: dict[str, str] | None = None
+    store, storage_option: dict[str, str] | None = None
 ) -> tuple[xr.Dataset | zarr.Group | zarr.Array, bool]:
     if ZARR_MAJOR_VERSION >= "3":
         # TODO: remove ValueError here once a version of xarray is released
@@ -78,12 +108,16 @@ def _open_with_xarray_or_zarr(
     else:
         exceptions = (KeyError, TypeError)
 
+    kwargs = {}
+    if isinstance(store, str):
+        kwargs["storage_options"] = storage_option
+
     try:
-        result = xr.open_zarr(url, storage_options=storage_option)
+        result = xr.open_zarr(store, **kwargs)
         is_xarray_dataset = True
     except exceptions:
         # xarray cannot open dataset, fall back to using zarr directly
-        result = zarr.open(url, storage_options=storage_option)
+        result = zarr.open(store, **kwargs)
         is_xarray_dataset = False
 
     return result, is_xarray_dataset
