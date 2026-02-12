@@ -10,7 +10,10 @@ zarrdump
 .. image:: https://img.shields.io/pypi/l/zarrdump.svg
    :target: https://github.com/oliverwm1/zarrdump/blob/main/LICENSE
 
-Describe `zarr <https://github.com/zarr-developers/zarr-python>`_ stores from the command line. A path to any filesystem implemented by `fsspec <https://github.com/fsspec/filesystem_spec>`_ is valid.
+
+Describe `zarr <https://github.com/zarr-developers/zarr-python>`_ stores from the command line.
+A path to any filesystem implemented by `fsspec <https://github.com/fsspec/filesystem_spec>`_ is valid.
+Inspired by `ncdump <https://docs.unidata.ucar.edu/nug/current/netcdf_utilities_guide.html#ncdump_guide>`_.
 
 Installation
 ------------
