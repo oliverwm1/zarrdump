@@ -99,7 +99,7 @@ def dump(
 
 
 def _open_with_xarray_or_zarr(
-    store, storage_option: dict[str, str] | None = None
+    store: str | zarr.storage.ObjectStore, storage_option: dict[str, str] | None = None
 ) -> tuple[xr.Dataset | zarr.Group | zarr.Array, bool]:
     if ZARR_MAJOR_VERSION >= "3":
         # TODO: remove ValueError here once a version of xarray is released
@@ -109,7 +109,7 @@ def _open_with_xarray_or_zarr(
         exceptions = (KeyError, TypeError)
 
     kwargs = {}
-    if isinstance(store, str):
+    if storage_option is not None:
         kwargs["storage_options"] = storage_option
 
     try:
