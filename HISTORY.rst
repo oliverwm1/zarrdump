@@ -1,3 +1,11 @@
+latest
+------
+
+- add ``--obstore`` option for using obstore as the storage backend
+- drop support for python 3.9
+- add tox environments for python 3.13 and 3.14
+- convert README from rst to markdown
+
 v0.6.1 (2025-09-21)
 -------------------
 
