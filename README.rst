@@ -13,7 +13,7 @@ zarrdump
 
 Describe `zarr <https://github.com/zarr-developers/zarr-python>`_ stores from the command line.
 A path to any filesystem implemented by `fsspec <https://github.com/fsspec/filesystem_spec>`_ is valid.
-Inspired by `ncdump <https://docs.unidata.ucar.edu/nug/current/netcdf_utilities_guide.html#ncdump_guide>`_.
+This package is inspired by `ncdump <https://docs.unidata.ucar.edu/nug/current/netcdf_utilities_guide.html#ncdump_guide>`_.
 
 Installation
 ------------
