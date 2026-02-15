@@ -1,5 +1,5 @@
-latest
-------
+v0.7.0 (2026-02-15)
+-------------------
 
 - add ``--obstore`` option for using obstore as the storage backend
 - drop support for python 3.9
