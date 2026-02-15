@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "zarrdump"
 version = "0.7.0"
 description = "Describe zarr stores from the command line."
-readme = "README.rst"
+readme = "README.md"
 license = { text = "BSD 3-Clause license" }
 authors = [
     { name = "Oliver Watt-Meyer", email = "oliverwatt@gmail.com" }
