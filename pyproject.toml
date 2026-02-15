@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "zarrdump"
-version = "0.7.0"
+version = "0.7.1"
 description = "Describe zarr stores from the command line."
 readme = "README.md"
 license = { text = "BSD 3-Clause license" }
