@@ -11,7 +11,7 @@ ZARR_MAJOR_VERSION = zarr.__version__.split(".")[0]
 
 
 def test_version():
-    assert zarrdump.__version__ == "0.6.1"
+    assert zarrdump.__version__ == "0.7.0"
 
 
 @pytest.fixture()
