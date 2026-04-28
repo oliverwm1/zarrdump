@@ -65,3 +65,16 @@ Options:
   --obstore               Use obstore backend instead of fsspec
   --help                  Show this message and exit.
 ```
+
+## Examples
+
+### Inspect a local S3 compatible store
+
+This will use a local minio object store as the backend.
+
+```
+  zarrdump "s3://my_bucket/offline_data.zarr" \
+  --storage-option key=minioadmin \
+  --storage-option secret=minioadmin \
+  --storage-option endpoint_url=http://localhost:9000
+```
